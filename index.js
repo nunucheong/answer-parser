@@ -12,6 +12,7 @@ const fields = [
 ]
 
 const survey = getSurvey
+const surveyQuestions = survey.surveyQuestions
 const responses = getResponses()
 
 const qid2MAColumnName = (questionID, choiceIndex) => {
@@ -97,10 +98,114 @@ const columnTemplate = survey.surveyQuestions.reduce((previous, question) => {
   }
 }, {})
 
-console.log(columnTemplate)
+const isDropdown = (qid) => {
+  const filteredQuestions = surveyQuestions.filter(q => q.questionID === qid)
+  return filteredQuestions[0].questionType === 'Dropdown'
+}
+
+const isSA = (qid) => {
+  const filteredQuestions = surveyQuestions.filter(q => q.questionID === qid)
+  return filteredQuestions[0].selector === 'SAVR'
+}
+
+const isSingleDropdown = (qid) => {
+  return isDropdown(qid) && isSA(qid)
+}
+
+const getChoiceLabel = (qid, choiceIndex) => {
+  const filteredQuestions = surveyQuestions.filter(q => q.questionID === qid)
+  const displayLabel = filteredQuestions[0].choices[choiceIndex]
+  if(isSingleDropdown(qid)) {
+    console.log('is dropdown', qid, choiceIndex)
+    return choiceIndex
+  }
+  if (displayLabel) {
+    return displayLabel['display']
+  }
+  return ''
+}
+
+const assignLabelSingleAnswer = (respondent, qid) => {
+  const respondentID = respondent.respondentID
+  const answers = respondent.answers
+  const matchedAnswer = answers.filter(answer => {
+    return answer.questionID === qid
+  })
+  if (matchedAnswer.length === 0) {
+    return ''
+  }
+  const input = matchedAnswer[0].input
+  let label = '';
+  if ('value' in input) {
+    label = input.value
+  } else if ('selected' in input) {
+    label = getChoiceLabel(qid, input.selected)
+  }
+  return label
+}
+
+const assignLabelMultipleAnswer = (respondent, qid, choice) => {
+  const respondentID = respondent.respondentID
+  const answers = respondent.answers
+  const matchedAnswer = answers.filter(answer => {
+    return answer.questionID === qid
+  })
+  if (matchedAnswer.length === 0) {
+    return ''
+  }
+  const input = matchedAnswer[0].input
+  const selected = input.selected
+  const order = input.order
+  console.log(input)
+  if (choice === 'TEXT') {
+    const oac = selected.includes('oac')? input.other : ''
+    return oac
+  }
+  if (choice === 'NONE') {
+    const noa = selected.includes('noa')? 'None of Above' : ''
+    return noa
+  }
+  let label = '';
+  if ('selected' in input) {
+    if (isDropdown(qid)) {
+      const checkLabel = getChoiceLabel(qid, choice)
+      label = selected.includes(checkLabel)? checkLabel
+                : ''
+    } else {
+      label = selected.includes(choice)?
+                getChoiceLabel(qid, choice)
+                : ''
+    }
+  } else if ('order' in input) {
+    const choiceByRanking = order[parseInt(choice)-1]
+    label = getChoiceLabel(qid, choiceByRanking)
+  }
+  return label
+}
+
+const assignLabelMatrix = (respondent, qid, choice, ans) => {
+  const respondentID = respondent.respondentID
+  const answers = respondent.answers
+  console.log(qid)
+  return 'Matrix'
+}
+
+const assignLabelToColumn = (key, respondent) => {
+  let label = '';
+  const [qid, choice, ans] = key.split('_')
+  label = (choice && ans)? assignLabelMatrix (respondent, qid, choice, ans) :
+            (choice)? assignLabelMultipleAnswer (respondent, qid, choice) :
+              assignLabelSingleAnswer(respondent, qid)
+  // console.log(qid, 'labels', key, label)
+  return label
+}
 
 const parsedResponses = responses.map(respondent => {
-  const responsentID = respondent.respondentID
-  const answers = respondent.answers;
-
+  const parsedAnswers = {};
+  for (key in columnTemplate) {
+    parsedAnswers[key] = assignLabelToColumn(key, respondent)
+  }
+  return Object.assign({}, columnTemplate, parsedAnswers)
 })
+
+console.log(parsedResponses)

@@ -14,7 +14,7 @@ const survey = {
     },
     "surveyQuestions" : [
         {
-            "questionID" : "Q_ID1",
+            "questionID" : "QID1",
             "questionLabel" : "What is your name? (a word or set of words by which a person or thing is known, addressed, or referred to.) This question is so long! Please bear with me.",
             "questionType" : "TE",
             "defaultText" : "johndoe",
@@ -30,7 +30,7 @@ const survey = {
             }
         },
         {
-            "questionID" : "Q_ID2",
+            "questionID" : "QID2",
             "questionLabel" : "What is your gender?[ the state of being male or female (typically used with reference to social and cultural differences rather than biological ones)].",
             "questionType" : "MC",
             "selector" : "SAVR",
@@ -69,7 +69,7 @@ const survey = {
             }
         },
         {
-            "questionID" : "Q_ID3",
+            "questionID" : "QID3",
             "questionLabel" : "Do you play any sport frequently? You can choose multiple.",
             "questionType" : "MC",
             "selector" : "MAVR",
@@ -130,7 +130,7 @@ const survey = {
             }
         },
         {
-            "questionID" : "Q_ID4",
+            "questionID" : "QID4",
             "questionLabel" : "Tennis is the best!",
             "questionType" : "MC",
             "selector" : "SAVR",
@@ -169,7 +169,7 @@ const survey = {
             }
         },
         {
-            "questionID" : "Q_ID5",
+            "questionID" : "QID5",
             "questionLabel" : "How many days do you exercise in a week?",
             "questionType" : "Slider",
             "selector" : "CSLIDER",
@@ -199,7 +199,7 @@ const survey = {
             }
         },
         {
-            "questionID" : "Q_ID6",
+            "questionID" : "QID6",
             "questionLabel" : "Please rank how likely these options will get you to be active.",
             "questionType" : "Ranking",
             "choices" : {
@@ -253,7 +253,7 @@ const survey = {
             }
         },
         {
-            "questionID" : "Q_ID7",
+            "questionID" : "QID7",
             "questionLabel" : "Please select your favourite fruit",
             "questionType" : "Dropdown",
             "selector" : "SAVR",
@@ -313,7 +313,7 @@ const survey = {
             }
         },
         {
-            "questionID" : "Q_ID8",
+            "questionID" : "QID8",
             "questionLabel" : "Please select your favourite brands",
             "questionType" : "Dropdown",
             "selector" : "MAVR",
@@ -373,7 +373,7 @@ const survey = {
             }
         },
         {
-            "questionID" : "Q_ID9",
+            "questionID" : "QID9",
             "questionLabel" : "Please indicate how much you like and dislike the following desserts",
             "questionType" : "Matrix",
             "selector" : "SAVR",
@@ -460,7 +460,7 @@ const survey = {
             }
         },
         {
-            "questionID" : "Q_ID10",
+            "questionID" : "QID10",
             "questionLabel" : "How satisfied or dissatisfied are you with each of the following?",
             "questionType" : "Matrix",
             "selector" : "MAVR",
@@ -559,9 +559,9 @@ const survey = {
                 }
             },
             "pageQuestions" : [
-                "Q_ID1",
-                "Q_ID2",
-                "Q_ID3"
+                "QID1",
+                "QID2",
+                "QID3"
             ]
         },
         {
@@ -575,8 +575,8 @@ const survey = {
                 }
             },
             "pageQuestions" : [
-                "Q_ID4",
-                "Q_ID5"
+                "QID4",
+                "QID5"
             ]
         },
         {
@@ -590,11 +590,11 @@ const survey = {
                 }
             },
             "pageQuestions" : [
-                "Q_ID6",
-                "Q_ID7",
-                "Q_ID8",
-                "Q_ID9",
-                "Q_ID10"
+                "QID6",
+                "QID7",
+                "QID8",
+                "QID9",
+                "QID10"
             ]
         }
     ],
