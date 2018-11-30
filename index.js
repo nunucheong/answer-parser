@@ -125,6 +125,13 @@ const getChoiceLabel = (qid, choiceIndex) => {
   return ''
 }
 
+const getAnswerLabel = (qid, answerIndex) => {
+  const filteredQuestions = surveyQuestions.filter(q => q.questionID === qid)
+  const displayAnswer = filteredQuestions[0].answers[answerIndex]
+  return displayAnswer['display']
+}
+
+
 const assignLabelSingleAnswer = (respondent, qid) => {
   const respondentID = respondent.respondentID
   const answers = respondent.answers
@@ -154,19 +161,18 @@ const assignLabelMultipleAnswer = (respondent, qid, choice) => {
     return ''
   }
   const input = matchedAnswer[0].input
-  const selected = input.selected
-  const order = input.order
   console.log(input)
-  if (choice === 'TEXT') {
-    const oac = selected.includes('oac')? input.other : ''
-    return oac
-  }
-  if (choice === 'NONE') {
-    const noa = selected.includes('noa')? 'None of Above' : ''
-    return noa
-  }
   let label = '';
   if ('selected' in input) {
+    const selected = input.selected
+    if (choice === 'TEXT') {
+      const oac = selected.includes('oac')? input.other : ''
+      return oac
+    }
+    if (choice === 'NONE') {
+      const noa = selected.includes('noa')? 'None of Above' : ''
+      return noa
+    }
     if (isDropdown(qid)) {
       const checkLabel = getChoiceLabel(qid, choice)
       label = selected.includes(checkLabel)? checkLabel
@@ -177,8 +183,16 @@ const assignLabelMultipleAnswer = (respondent, qid, choice) => {
                 : ''
     }
   } else if ('order' in input) {
+    const order = input.order
     const choiceByRanking = order[parseInt(choice)-1]
     label = getChoiceLabel(qid, choiceByRanking)
+  } else if ('input' in input) {
+    const matrixInput = input.input
+    for (key in matrixInput) {
+      if (matrixInput[key].includes(choice)) {
+        label = getAnswerLabel(qid, key)
+      }
+    }
   }
   return label
 }
