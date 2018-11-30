@@ -116,7 +116,6 @@ const getChoiceLabel = (qid, choiceIndex) => {
   const filteredQuestions = surveyQuestions.filter(q => q.questionID === qid)
   const displayLabel = filteredQuestions[0].choices[choiceIndex]
   if(isSingleDropdown(qid)) {
-    console.log('is dropdown', qid, choiceIndex)
     return choiceIndex
   }
   if (displayLabel) {
@@ -161,7 +160,6 @@ const assignLabelMultipleAnswer = (respondent, qid, choice) => {
     return ''
   }
   const input = matchedAnswer[0].input
-  console.log(input)
   let label = '';
   if ('selected' in input) {
     const selected = input.selected
@@ -198,10 +196,18 @@ const assignLabelMultipleAnswer = (respondent, qid, choice) => {
 }
 
 const assignLabelMatrix = (respondent, qid, choice, ans) => {
+  let label = ''
   const respondentID = respondent.respondentID
   const answers = respondent.answers
-  console.log(qid)
-  return 'Matrix'
+  const matchedAnswer = answers.filter(answer => {
+    return answer.questionID === qid
+  })
+  if (matchedAnswer.length === 0) return ''
+  const matrixInput = matchedAnswer[0].input.input
+  if (matrixInput[ans].includes(choice)) {
+    label = getAnswerLabel(qid, ans)
+  }
+  return label
 }
 
 const assignLabelToColumn = (key, respondent) => {
@@ -210,7 +216,6 @@ const assignLabelToColumn = (key, respondent) => {
   label = (choice && ans)? assignLabelMatrix (respondent, qid, choice, ans) :
             (choice)? assignLabelMultipleAnswer (respondent, qid, choice) :
               assignLabelSingleAnswer(respondent, qid)
-  // console.log(qid, 'labels', key, label)
   return label
 }
 
