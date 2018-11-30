@@ -2,16 +2,8 @@ const getResponses = require('./answers')
 const getSurvey = require('./survey')
 const Json2csvParser = require('json2csv').Parser
 
-const fields = [
-    "surveyID",
-    "respondentID",
-    "questionID",
-    "questionType",
-    "editedAt",
-    "input"
-]
-
 const survey = getSurvey
+const surveyID = survey.surveyID
 const surveyQuestions = survey.surveyQuestions
 const responses = getResponses()
 
@@ -224,7 +216,24 @@ const parsedResponses = responses.map(respondent => {
   for (key in columnTemplate) {
     parsedAnswers[key] = assignLabelToColumn(key, respondent)
   }
-  return Object.assign({}, columnTemplate, parsedAnswers)
+  const respondentID = respondent.respondentID
+  return Object.assign({},
+    {surveyID, respondentID},
+    columnTemplate,
+    parsedAnswers)
 })
 
 console.log(parsedResponses)
+
+const columnTemplateKeyArray = Object.keys(columnTemplate)
+
+const fields = [
+    "surveyID",
+    "respondentID",
+    ...columnTemplateKeyArray
+]
+
+const json2csvParser = new Json2csvParser({ fields });
+const csv = json2csvParser.parse(parsedResponses);
+
+console.log(csv);
